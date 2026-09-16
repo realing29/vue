@@ -1,3 +1,4 @@
 export { useOrderStore } from "./model/store";
-export { COMPLETED_ORDER_STATUS } from "./type/type";
-export type { IOrder, IOrderState } from "./type/type";
+export { formatOrderDate } from "./lib/formatOrderDate";
+export { COMPLETED_ORDER_STATUS, NEW_ORDER_STATUS } from "./type/type";
+export type { ICreateOrderPayload, IOrder, IOrderState } from "./type/type";

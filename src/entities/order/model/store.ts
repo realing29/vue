@@ -1,8 +1,13 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { completeOrder } from "../api/completeOrder";
+import { createOrder } from "../api/createOrder";
 import { deleteOrder } from "../api/deleteOrder";
 import { getOrders } from "../api/getOrders";
-import { COMPLETED_ORDER_STATUS, type IOrderState } from "../type/type";
+import {
+  COMPLETED_ORDER_STATUS,
+  type ICreateOrderPayload,
+  type IOrderState,
+} from "../type/type";
 
 export const useOrderStore = defineStore("order", {
   state: (): IOrderState => ({
@@ -23,6 +28,16 @@ export const useOrderStore = defineStore("order", {
         this.orders = [];
       } finally {
         this.isLoading = false;
+      }
+    },
+    async createOrder(payload: ICreateOrderPayload) {
+      try {
+        const createdOrder = await createOrder(payload);
+        this.orders = [...this.orders, createdOrder];
+        return true;
+      } catch (error) {
+        console.error(error);
+        return false;
       }
     },
     async completeOrder(id: number) {
