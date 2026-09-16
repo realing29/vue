@@ -37,22 +37,17 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, _from, next) => {
+router.beforeEach((to) => {
   const isAuthenticated = !!currentUserStorage.get();
 
   // Если маршрут требует авторизации, а пользователь не залогинен
   if (to.meta.requiresAuth && !isAuthenticated) {
-    // Перенаправляем на страницу входа
-    next({ name: ROUTE_NAMES.LOGIN });
+    return { name: ROUTE_NAMES.LOGIN };
   }
+
   // Если пользователь уже авторизован, но пытается зайти на страницу Login
-  else if (to.name === ROUTE_NAMES.LOGIN && isAuthenticated) {
-    // Отправляем его на главную
-    next({ name: ROUTE_NAMES.HOME });
-  }
-  // В остальных случаях разрешаем переход
-  else {
-    next();
+  if (to.name === ROUTE_NAMES.LOGIN && isAuthenticated) {
+    return { name: ROUTE_NAMES.HOME };
   }
 });
 
