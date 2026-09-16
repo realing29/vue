@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { storeToRefs } from "pinia";
-import { useAuthStore } from "@entities/auth/model/store";
-import { useMessage } from "@shared/ui/message/useMessage";
+import { useAuthStore } from "@entities/auth";
+import { useMessage } from "@shared/ui/message";
 import { useRouter } from "vue-router";
 
 const router = useRouter();

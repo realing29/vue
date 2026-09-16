@@ -1,4 +1,4 @@
-import { http } from "@shared/api/http";
+import { http } from "@shared/api";
 import { COMPLETED_ORDER_STATUS, type IOrder } from "../type/type";
 
 export const completeOrder = async (id: number) => {

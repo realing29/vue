@@ -1,4 +1,4 @@
-import { http } from "@shared/api/http";
+import { http } from "@shared/api";
 import type { IOrder } from "../type/type";
 
 export const getOrders = async () => {

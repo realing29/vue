@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
-import { useAuthStore } from "@entities/auth/model/store";
-import { useOrderStore } from "@entities/order/model/store";
-import { COMPLETED_ORDER_STATUS } from "@entities/order/type/type";
-import { useConfirm } from "@shared/ui/confirm/useConfirm";
-import { useMessage } from "@shared/ui/message/useMessage";
+import { useAuthStore } from "@entities/auth";
+import { COMPLETED_ORDER_STATUS, useOrderStore } from "@entities/order";
+import { useConfirm } from "@shared/ui/confirm";
+import { useMessage } from "@shared/ui/message";
+import { CheckIcon, CloseIcon } from "@shared/icons";
 
 const MONTHS: Record<string, number> = {
   января: 0,
@@ -188,12 +188,7 @@ onMounted(() => {
                 aria-label="Выполнить заказ"
                 @click="completeOrder(order.id)"
               >
-                <svg viewBox="0 0 16 16" aria-hidden="true">
-                  <path
-                    d="M6.4 11.2 3.2 8l1.1-1.1 2.1 2.1 5.3-5.3 1.1 1.1z"
-                    fill="currentColor"
-                  />
-                </svg>
+                <CheckIcon />
               </button>
               <button
                 class="orders__action orders__action--delete"
@@ -201,12 +196,7 @@ onMounted(() => {
                 aria-label="Удалить заказ"
                 @click="deleteOrder(order.id)"
               >
-                <svg viewBox="0 0 16 16" aria-hidden="true">
-                  <path
-                    d="M4.2 3.1 3.1 4.2 6.9 8l-3.8 3.8 1.1 1.1L8 9.1l3.8 3.8 1.1-1.1L9.1 8l3.8-3.8-1.1-1.1L8 6.9z"
-                    fill="currentColor"
-                  />
-                </svg>
+                <CloseIcon />
               </button>
             </div>
           </td>
@@ -259,10 +249,6 @@ onMounted(() => {
   font-size: 12px;
 }
 
-.orders__table tbody tr.orders__row--done {
-  opacity: 0.65;
-}
-
 .orders__table tbody tr.orders__row--done td:not(.orders__actions-col) {
   background: #ececec;
   color: #888;
@@ -297,7 +283,7 @@ onMounted(() => {
   cursor: pointer;
 }
 
-.orders__action svg {
+.orders__action :deep(svg) {
   width: 16px;
   height: 16px;
 }

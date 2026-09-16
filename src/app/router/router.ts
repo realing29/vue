@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 import DefaultLayout from "@app/layots/DefaultLayout.vue";
-import OrdersListPage from "@pages/ordresList/OrdersListPage.vue";
-import OrdresCreatePage from "@pages/ordersCreate/ui/OrdersCreatePage.vue";
-import LoginPage from "@pages/login/ui/LoginPage.vue";
-import { currentUserStorage } from "@entities/auth/lib/currentUserStorage";
+import { OrdersListPage } from "@pages/ordresList";
+import { OrdersCreatePage } from "@pages/ordersCreate";
+import { LoginPage } from "@pages/login";
+import { currentUserStorage } from "@entities/auth";
 
 const routes = [
   {
@@ -19,7 +19,7 @@ const routes = [
       {
         path: "create",
         name: "create",
-        component: OrdresCreatePage,
+        component: OrdersCreatePage,
       },
     ],
   },

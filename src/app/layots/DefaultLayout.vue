@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Header from "@app/layots/Header.vue";
-import { useAuthStore } from "@entities/auth/model/store";
+import { useAuthStore } from "@entities/auth";
 
 const authStore = useAuthStore();
 authStore.checkAuth();

@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 import type { IState } from "../type/type";
-import { mockAuth } from "@/shared/api/mockAuth";
+import { mockAuth } from "../api/mockAuth";
 import { currentUserStorage } from "../lib/currentUserStorage";
 
 export const useAuthStore = defineStore("auth", {

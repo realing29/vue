@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
-import { useAuthStore } from "@entities/auth/model/store";
+import { useAuthStore } from "@entities/auth";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -53,6 +53,12 @@ const handleLogout = () => {
 .header__link {
   color: #fff;
   font-size: 16px;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+}
+
+.header__link.router-link-exact-active {
+  border-bottom-color: #fff;
 }
 
 .header__user {
