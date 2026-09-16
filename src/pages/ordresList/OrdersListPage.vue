@@ -1,30 +1,22 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
+import { useI18n } from "vue-i18n";
 import { useAuthStore } from "@entities/auth";
-import { COMPLETED_ORDER_STATUS, useOrderStore } from "@entities/order";
+import {
+  COMPLETED_ORDER_STATUS,
+  formatOrderDateDisplay,
+  parseOrderDate,
+  useOrderStore,
+} from "@entities/order";
 import { useConfirm } from "@shared/ui/confirm";
 import { useMessage } from "@shared/ui/message";
 import { CheckIcon, CloseIcon } from "@shared/icons";
 
-const MONTHS: Record<string, number> = {
-  января: 0,
-  февраля: 1,
-  марта: 2,
-  апреля: 3,
-  мая: 4,
-  июня: 5,
-  июля: 6,
-  августа: 7,
-  сентября: 8,
-  октября: 9,
-  ноября: 10,
-  декабря: 11,
-};
-
 type SortKey = "address" | "date";
 type SortDir = "asc" | "desc";
 
+const { t, locale } = useI18n();
 const orderStore = useOrderStore();
 const authStore = useAuthStore();
 const { getOrdersList, getIsLoading } = storeToRefs(orderStore);
@@ -35,25 +27,24 @@ const { showMessage } = useMessage();
 const sortKey = ref<SortKey | null>(null);
 const sortDir = ref<SortDir>("asc");
 
-const parseOrderDate = (value: string) => {
-  const [day, month, year] = value.trim().split(/\s+/);
-  const monthIndex = MONTHS[month];
-  const parsed = new Date(Number(year), monthIndex, Number(day)).getTime();
-  return Number.isFinite(parsed) && monthIndex !== undefined
-    ? parsed
-    : Number.NaN;
-};
+watch(
+  () => t("app.title"),
+  (title) => {
+    document.title = title;
+  },
+  { immediate: true },
+);
 
 const compareOrders = (left: string, right: string, key: SortKey) => {
   if (key === "address") {
-    return left.localeCompare(right, "ru");
+    return left.localeCompare(right, locale.value);
   }
 
   const leftDate = parseOrderDate(left);
   const rightDate = parseOrderDate(right);
 
   if (Number.isNaN(leftDate) || Number.isNaN(rightDate)) {
-    return left.localeCompare(right, "ru");
+    return left.localeCompare(right, locale.value);
   }
 
   return leftDate - rightDate;
@@ -94,13 +85,28 @@ const sortIndicator = (key: SortKey) => {
 
 const isCompleted = (status: string) => status === COMPLETED_ORDER_STATUS;
 
+const statusLabel = (status: string) => {
+  if (status === "new" || status === "completed") {
+    return t(`orders.status.${status}`);
+  }
+  return status;
+};
+
+const displayDate = (value: string) => {
+  return formatOrderDateDisplay(value, locale.value);
+};
+
 const completeOrder = async (id: number) => {
   if (!getCurrentUserIsAdmin.value) {
     return;
   }
 
   const isSuccess = await orderStore.completeOrder(id);
-  showMessage(isSuccess ? "Заказ выполнен" : "Не удалось выполнить заказ");
+  showMessage(
+    isSuccess
+      ? t("orders.messages.completed")
+      : t("orders.messages.completeFailed"),
+  );
 };
 
 const deleteOrder = async (id: number) => {
@@ -109,9 +115,9 @@ const deleteOrder = async (id: number) => {
   }
 
   const isConfirmed = await confirm({
-    title: "Удаление заказа",
-    text: "Удалить этот заказ?",
-    confirmText: "Удалить",
+    title: t("orders.deleteConfirm.title"),
+    text: t("orders.deleteConfirm.text"),
+    confirmText: t("orders.deleteConfirm.confirm"),
   });
 
   if (!isConfirmed) {
@@ -119,7 +125,11 @@ const deleteOrder = async (id: number) => {
   }
 
   const isSuccess = await orderStore.deleteOrder(id);
-  showMessage(isSuccess ? "Заказ удалён" : "Не удалось удалить заказ");
+  showMessage(
+    isSuccess
+      ? t("orders.messages.deleted")
+      : t("orders.messages.deleteFailed"),
+  );
 };
 
 onMounted(() => {
@@ -129,22 +139,24 @@ onMounted(() => {
 
 <template>
   <section class="orders">
-    <p v-if="getIsLoading" class="orders__status">Загрузка заказов...</p>
+    <p v-if="getIsLoading" class="orders__status">
+      {{ t("orders.loading") }}
+    </p>
     <p v-else-if="!getOrdersList.length" class="orders__status">
-      Заказы не найдены
+      {{ t("orders.empty") }}
     </p>
     <table v-else class="orders__table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Имя</th>
+          <th>{{ t("orders.columns.id") }}</th>
+          <th>{{ t("orders.columns.name") }}</th>
           <th>
             <button
               class="orders__sort"
               type="button"
               @click="toggleSort('address')"
             >
-              Адрес
+              {{ t("orders.columns.address") }}
               <span v-if="sortIndicator('address')" class="orders__sort-icon">{{
                 sortIndicator("address")
               }}</span>
@@ -156,14 +168,14 @@ onMounted(() => {
               type="button"
               @click="toggleSort('date')"
             >
-              Дата
+              {{ t("orders.columns.date") }}
               <span v-if="sortIndicator('date')" class="orders__sort-icon">{{
                 sortIndicator("date")
               }}</span>
             </button>
           </th>
-          <th>Статус</th>
-          <th>Комментарий</th>
+          <th>{{ t("orders.columns.status") }}</th>
+          <th>{{ t("orders.columns.comment") }}</th>
           <th v-if="getCurrentUserIsAdmin" class="orders__actions-col"></th>
         </tr>
       </thead>
@@ -176,8 +188,8 @@ onMounted(() => {
           <td>{{ order.id }}</td>
           <td>{{ order.name }}</td>
           <td>{{ order.address }}</td>
-          <td>{{ order.date }}</td>
-          <td>{{ order.status }}</td>
+          <td>{{ displayDate(order.date) }}</td>
+          <td>{{ statusLabel(order.status) }}</td>
           <td>{{ order.comment }}</td>
           <td v-if="getCurrentUserIsAdmin" class="orders__actions-col">
             <div class="orders__actions">
@@ -185,7 +197,7 @@ onMounted(() => {
                 v-if="!isCompleted(order.status)"
                 class="orders__action orders__action--complete"
                 type="button"
-                aria-label="Выполнить заказ"
+                :aria-label="t('orders.actions.complete')"
                 @click="completeOrder(order.id)"
               >
                 <CheckIcon />
@@ -193,7 +205,7 @@ onMounted(() => {
               <button
                 class="orders__action orders__action--delete"
                 type="button"
-                aria-label="Удалить заказ"
+                :aria-label="t('orders.actions.delete')"
                 @click="deleteOrder(order.id)"
               >
                 <CloseIcon />

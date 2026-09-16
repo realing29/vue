@@ -1,26 +1,34 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
+import { useI18n } from "vue-i18n";
 import { useAuthStore } from "@entities/auth";
 import { useMessage } from "@shared/ui/message";
 import { useRouter } from "vue-router";
 
+const { t } = useI18n();
 const router = useRouter();
 const { showMessage } = useMessage();
-const AUTH_ERROR_MESSAGE = "Неверный логин\\пароль";
 
 const MIN_PASSWORD_LENGTH = 8;
-const MIN_PASSWORD_LENGTH_ERROR = "Пароль должен содержать не менее 8 символов";
 const authStore = useAuthStore();
 const { getFormName, getFormPassword } = storeToRefs(authStore);
 const isPasswordTouched = ref(false);
+
+watch(
+  () => t("app.title"),
+  (title) => {
+    document.title = title;
+  },
+  { immediate: true },
+);
 
 const passwordError = computed(() => {
   if (!isPasswordTouched.value) {
     return "";
   }
   if (getFormPassword.value.length < MIN_PASSWORD_LENGTH) {
-    return MIN_PASSWORD_LENGTH_ERROR;
+    return t("login.passwordMinLength", { min: MIN_PASSWORD_LENGTH });
   }
   return "";
 });
@@ -56,7 +64,7 @@ const handleSubmit = async () => {
     return;
   }
 
-  showMessage(AUTH_ERROR_MESSAGE);
+  showMessage(t("login.authError"));
 };
 </script>
 
@@ -66,14 +74,14 @@ const handleSubmit = async () => {
       <input
         class="login-page__input"
         type="text"
-        placeholder="Логин"
+        :placeholder="t('login.loginPlaceholder')"
         :value="getFormName"
         @input="onNameInput"
       />
       <input
         class="login-page__input"
         type="password"
-        placeholder="Пароль"
+        :placeholder="t('login.passwordPlaceholder')"
         minlength="8"
         :value="getFormPassword"
         @input="onPasswordInput"
@@ -85,7 +93,7 @@ const handleSubmit = async () => {
         type="submit"
         :disabled="isSubmitDisabled"
       >
-        Войти
+        {{ t("login.submit") }}
       </button>
     </form>
   </div>
@@ -93,12 +101,14 @@ const handleSubmit = async () => {
 
 <style scoped>
 .login-page {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
 }
+
 .login-page__form {
   display: flex;
   flex-direction: column;

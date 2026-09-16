@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@entities/auth";
 
+const { t } = useI18n();
 const router = useRouter();
 const authStore = useAuthStore();
 const { getCurrentUser } = storeToRefs(authStore);
@@ -17,16 +19,16 @@ const handleLogout = () => {
   <header class="header">
     <nav class="header__nav">
       <RouterLink class="header__link" :to="{ name: 'home' }">
-        Все заказы
+        {{ t("header.allOrders") }}
       </RouterLink>
       <RouterLink class="header__link" :to="{ name: 'create' }">
-        Добавить заказ
+        {{ t("header.addOrder") }}
       </RouterLink>
     </nav>
     <div class="header__user">
       <span class="header__name">{{ getCurrentUser?.name }}</span>
       <button class="header__logout" type="button" @click="handleLogout">
-        Выйти
+        {{ t("header.logout") }}
       </button>
     </div>
   </header>

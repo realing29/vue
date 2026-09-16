@@ -1,12 +1,16 @@
-export const COMPLETED_ORDER_STATUS = "Выполнен";
-export const NEW_ORDER_STATUS = "Новый";
+export const COMPLETED_ORDER_STATUS = "completed";
+export const NEW_ORDER_STATUS = "new";
+
+export type OrderStatus =
+  | typeof COMPLETED_ORDER_STATUS
+  | typeof NEW_ORDER_STATUS;
 
 export type IOrder = {
   id: number;
   name: string;
   address: string;
   date: string;
-  status: string;
+  status: OrderStatus | string;
   comment: string;
 };
 

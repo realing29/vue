@@ -36,7 +36,7 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const isAuthenticated = !!currentUserStorage.get();
 
   // Если маршрут требует авторизации, а пользователь не залогинен

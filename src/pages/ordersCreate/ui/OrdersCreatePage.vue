@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from "vue";
 import { storeToRefs } from "pinia";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@entities/auth";
 import {
@@ -10,8 +11,7 @@ import {
 } from "@entities/order";
 import { useMessage } from "@shared/ui/message";
 
-const REQUIRED_ERROR = "Обязательное поле";
-
+const { t } = useI18n();
 const router = useRouter();
 const { showMessage } = useMessage();
 const authStore = useAuthStore();
@@ -31,14 +31,14 @@ const nameError = computed(() => {
   if (!isSubmitted.value || form.name.trim()) {
     return "";
   }
-  return REQUIRED_ERROR;
+  return t("createOrder.required");
 });
 
 const addressError = computed(() => {
   if (!isSubmitted.value || form.address.trim()) {
     return "";
   }
-  return REQUIRED_ERROR;
+  return t("createOrder.required");
 });
 
 const handleSubmit = async () => {
@@ -59,12 +59,12 @@ const handleSubmit = async () => {
   isSubmitting.value = false;
 
   if (isSuccess) {
-    showMessage("Заказ добавлен");
+    showMessage(t("createOrder.success"));
     router.push({ name: "home" });
     return;
   }
 
-  showMessage("Не удалось добавить заказ");
+  showMessage(t("createOrder.failed"));
 };
 </script>
 
@@ -76,7 +76,7 @@ const handleSubmit = async () => {
       @submit.prevent="handleSubmit"
     >
       <label class="create-order__field">
-        <span class="create-order__label">Имя</span>
+        <span class="create-order__label">{{ t("createOrder.name") }}</span>
         <input
           v-model="form.name"
           class="create-order__input"
@@ -86,7 +86,7 @@ const handleSubmit = async () => {
         <p v-if="nameError" class="create-order__error">{{ nameError }}</p>
       </label>
       <label class="create-order__field">
-        <span class="create-order__label">Адрес</span>
+        <span class="create-order__label">{{ t("createOrder.address") }}</span>
         <input
           v-model="form.address"
           class="create-order__input"
@@ -96,7 +96,7 @@ const handleSubmit = async () => {
         <p v-if="addressError" class="create-order__error">{{ addressError }}</p>
       </label>
       <label class="create-order__field">
-        <span class="create-order__label">Комментарий</span>
+        <span class="create-order__label">{{ t("createOrder.comment") }}</span>
         <textarea
           v-model="form.comment"
           class="create-order__textarea"
@@ -109,7 +109,7 @@ const handleSubmit = async () => {
         type="submit"
         :disabled="isSubmitting"
       >
-        Добавить заказ
+        {{ t("createOrder.submit") }}
       </button>
     </form>
   </section>
