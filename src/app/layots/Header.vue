@@ -40,7 +40,7 @@ const handleLogout = () => {
   gap: 24px;
   min-height: 56px;
   padding: 10px 24px;
-  background: #2d5a93;
+  background: var(--color-primary);
   color: #fff;
 }
 

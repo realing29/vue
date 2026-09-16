@@ -123,10 +123,10 @@ const handleSubmit = async () => {
 .login-page__button {
   width: 100%;
   height: 40px;
-  border: 1px solid #2c3e50;
+  border: 1px solid var(--color-primary);
   border-radius: 5px;
   padding: 0 10px;
-  background: #2c3e50;
+  background: var(--color-primary);
   color: #fff;
   cursor: pointer;
   transition:
@@ -136,8 +136,8 @@ const handleSubmit = async () => {
 }
 
 .login-page__button:not(:disabled):hover {
-  background: #1a252f;
-  border-color: #1a252f;
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
 }
 
 .login-page__button:disabled {

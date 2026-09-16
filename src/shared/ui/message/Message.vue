@@ -19,7 +19,7 @@ const { message } = useMessage();
   max-width: min(420px, calc(100vw - 32px));
   padding: 12px 16px;
   border-radius: 8px;
-  background: #2c3e50;
+  background: var(--color-primary);
   color: #fff;
   font-size: 14px;
   line-height: 1.4;
