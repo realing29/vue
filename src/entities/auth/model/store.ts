@@ -1,5 +1,7 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
-import type { ICurrentUser, IFormUser, IState } from "../type/type";
+import type { IState } from "../type/type";
+import { mockAuth } from "@/shared/api/mockAuth";
+import { currentUserStorage } from "../lib/currentUserStorage";
 
 export const useAuthStore = defineStore("auth", {
   state: (): IState => ({
@@ -18,7 +20,10 @@ export const useAuthStore = defineStore("auth", {
       return state.form.name;
     },
     getFormPassword: (state) => {
-      return state.form.name;
+      return state.form.password;
+    },
+    getCurrentUserIsAdmin: (state) => {
+      return state.currentUser?.role === "ADMIN";
     },
   },
   actions: {
@@ -28,7 +33,33 @@ export const useAuthStore = defineStore("auth", {
     setFormPassword(password: string) {
       this.form.password = password;
     },
-    async checkAuth() {},
+    async checkAuth() {
+      const currentUser = currentUserStorage.get();
+      if (currentUser) {
+        this.currentUser = currentUser;
+        return true;
+      }
+      return false;
+    },
+    logout() {
+      currentUserStorage.remove();
+      this.currentUser = null;
+    },
+    async submitAuth() {
+      const { name, password } = this.form;
+      try {
+        const user = await mockAuth({ name, password });
+        if (user) {
+          this.currentUser = user;
+          currentUserStorage.set(user);
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
+    },
   },
 });
 

@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import Header from "@app/layots/Header.vue";
-</script>
-
 <template>
-  <Header />
+  <router-view />
 </template>
