@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
-import type { IState } from "../type/type";
+import { USER_ROLE, type IState } from "../type/type";
 import { mockAuth } from "../api/mockAuth";
 import { currentUserStorage } from "../lib/currentUserStorage";
 
@@ -23,7 +23,7 @@ export const useAuthStore = defineStore("auth", {
       return state.form.password;
     },
     getCurrentUserIsAdmin: (state) => {
-      return state.currentUser?.role === "ADMIN";
+      return state.currentUser?.role === USER_ROLE.ADMIN;
     },
   },
   actions: {

@@ -6,6 +6,7 @@ import { useAuthStore } from "@entities/auth";
 import {
   COMPLETED_ORDER_STATUS,
   formatOrderDateDisplay,
+  NEW_ORDER_STATUS,
   parseOrderDate,
   useOrderStore,
 } from "@entities/order";
@@ -13,8 +14,23 @@ import { useConfirm } from "@shared/ui/confirm";
 import { useMessage } from "@shared/ui/message";
 import { CheckIcon, CloseIcon } from "@shared/icons";
 
-type SortKey = "address" | "date";
-type SortDir = "asc" | "desc";
+const SORT_KEY = {
+  ADDRESS: "address",
+  DATE: "date",
+} as const;
+
+const SORT_DIR = {
+  ASC: "asc",
+  DESC: "desc",
+} as const;
+
+const SORT_INDICATOR = {
+  ASC: "▲",
+  DESC: "▼",
+} as const;
+
+type SortKey = (typeof SORT_KEY)[keyof typeof SORT_KEY];
+type SortDir = (typeof SORT_DIR)[keyof typeof SORT_DIR];
 
 const { t, locale } = useI18n();
 const orderStore = useOrderStore();
@@ -25,7 +41,7 @@ const { confirm } = useConfirm();
 const { showMessage } = useMessage();
 
 const sortKey = ref<SortKey | null>(null);
-const sortDir = ref<SortDir>("asc");
+const sortDir = ref<SortDir>(SORT_DIR.ASC);
 
 watch(
   () => t("app.title"),
@@ -36,7 +52,7 @@ watch(
 );
 
 const compareOrders = (left: string, right: string, key: SortKey) => {
-  if (key === "address") {
+  if (key === SORT_KEY.ADDRESS) {
     return left.localeCompare(right, locale.value);
   }
 
@@ -58,7 +74,7 @@ const sortedOrders = computed(() => {
     return orders;
   }
 
-  const direction = sortDir.value === "asc" ? 1 : -1;
+  const direction = sortDir.value === SORT_DIR.ASC ? 1 : -1;
 
   return orders.sort((a, b) => {
     return compareOrders(a[currentKey], b[currentKey], currentKey) * direction;
@@ -67,12 +83,13 @@ const sortedOrders = computed(() => {
 
 const toggleSort = (key: SortKey) => {
   if (sortKey.value === key) {
-    sortDir.value = sortDir.value === "asc" ? "desc" : "asc";
+    sortDir.value =
+      sortDir.value === SORT_DIR.ASC ? SORT_DIR.DESC : SORT_DIR.ASC;
     return;
   }
 
   sortKey.value = key;
-  sortDir.value = "asc";
+  sortDir.value = SORT_DIR.ASC;
 };
 
 const sortIndicator = (key: SortKey) => {
@@ -80,13 +97,15 @@ const sortIndicator = (key: SortKey) => {
     return "";
   }
 
-  return sortDir.value === "asc" ? "▲" : "▼";
+  return sortDir.value === SORT_DIR.ASC
+    ? SORT_INDICATOR.ASC
+    : SORT_INDICATOR.DESC;
 };
 
 const isCompleted = (status: string) => status === COMPLETED_ORDER_STATUS;
 
 const statusLabel = (status: string) => {
-  if (status === "new" || status === "completed") {
+  if (status === NEW_ORDER_STATUS || status === COMPLETED_ORDER_STATUS) {
     return t(`orders.status.${status}`);
   }
   return status;
@@ -154,24 +173,28 @@ onMounted(() => {
             <button
               class="orders__sort"
               type="button"
-              @click="toggleSort('address')"
+              @click="toggleSort(SORT_KEY.ADDRESS)"
             >
               {{ t("orders.columns.address") }}
-              <span v-if="sortIndicator('address')" class="orders__sort-icon">{{
-                sortIndicator("address")
-              }}</span>
+              <span
+                v-if="sortIndicator(SORT_KEY.ADDRESS)"
+                class="orders__sort-icon"
+                >{{ sortIndicator(SORT_KEY.ADDRESS) }}</span
+              >
             </button>
           </th>
           <th>
             <button
               class="orders__sort"
               type="button"
-              @click="toggleSort('date')"
+              @click="toggleSort(SORT_KEY.DATE)"
             >
               {{ t("orders.columns.date") }}
-              <span v-if="sortIndicator('date')" class="orders__sort-icon">{{
-                sortIndicator("date")
-              }}</span>
+              <span
+                v-if="sortIndicator(SORT_KEY.DATE)"
+                class="orders__sort-icon"
+                >{{ sortIndicator(SORT_KEY.DATE) }}</span
+              >
             </button>
           </th>
           <th>{{ t("orders.columns.status") }}</th>
@@ -233,7 +256,7 @@ onMounted(() => {
 .orders__table th,
 .orders__table td {
   padding: 10px 12px;
-  border: 1px solid #d0d0d0;
+  border: 1px solid var(--color-border-muted);
   text-align: left;
   background: #fff;
   color: #222;
@@ -301,11 +324,11 @@ onMounted(() => {
 }
 
 .orders__action--complete {
-  color: #1f7a3a;
+  color: var(--color-success);
 }
 
 .orders__action--delete {
-  color: #c0392b;
+  color: var(--color-danger);
 }
 
 .orders__action:hover {

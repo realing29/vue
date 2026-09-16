@@ -2,6 +2,7 @@
 import { computed, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
+import { ROUTE_NAMES } from "@app/router/routes";
 import { useAuthStore } from "@entities/auth";
 import { useMessage } from "@shared/ui/message";
 import { useRouter } from "vue-router";
@@ -60,7 +61,7 @@ const handleSubmit = async () => {
   const isSuccess = await authStore.submitAuth();
 
   if (isSuccess) {
-    router.push({ name: "home" });
+    router.push({ name: ROUTE_NAMES.HOME });
     return;
   }
 
@@ -82,7 +83,7 @@ const handleSubmit = async () => {
         class="login-page__input"
         type="password"
         :placeholder="t('login.passwordPlaceholder')"
-        minlength="8"
+        :minlength="MIN_PASSWORD_LENGTH"
         :value="getFormPassword"
         @input="onPasswordInput"
         @blur="isPasswordTouched = true"
@@ -120,14 +121,14 @@ const handleSubmit = async () => {
 .login-page__input {
   width: 100%;
   height: 40px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 5px;
   padding: 0 10px;
 }
 .login-page__error {
   width: 100%;
   margin: 0;
-  color: #c0392b;
+  color: var(--color-danger);
   font-size: 14px;
 }
 .login-page__button {
@@ -152,7 +153,7 @@ const handleSubmit = async () => {
 
 .login-page__button:disabled {
   background: #e8e8e8;
-  border-color: #d0d0d0;
+  border-color: var(--color-border-muted);
   color: #999;
   cursor: default;
   opacity: 0.7;

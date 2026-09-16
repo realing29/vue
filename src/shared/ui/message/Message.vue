@@ -15,7 +15,7 @@ const { message } = useMessage();
   position: fixed;
   top: 24px;
   left: 50%;
-  z-index: 1000;
+  z-index: var(--z-toast);
   max-width: min(420px, calc(100vw - 32px));
   padding: 12px 16px;
   border-radius: 8px;

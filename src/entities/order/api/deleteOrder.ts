@@ -1,5 +1,5 @@
-import { http } from "@shared/api";
+import { http, orderByIdEndpoint } from "@shared/api";
 
 export const deleteOrder = async (id: number) => {
-  await http.delete(`/events/${id}`);
+  await http.delete(orderByIdEndpoint(id));
 };

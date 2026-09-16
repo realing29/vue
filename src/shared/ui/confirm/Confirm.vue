@@ -2,6 +2,10 @@
 import { nextTick, onBeforeUnmount, ref, watch } from "vue";
 import { useConfirm } from "./useConfirm";
 
+const KEYBOARD_KEYS = {
+  ESCAPE: "Escape",
+} as const;
+
 const { state, close } = useConfirm();
 const confirmButton = ref<HTMLButtonElement | null>(null);
 
@@ -14,7 +18,7 @@ const onDialogClick = (event: MouseEvent) => {
 };
 
 const onKeydown = (event: KeyboardEvent) => {
-  if (event.key === "Escape") {
+  if (event.key === KEYBOARD_KEYS.ESCAPE) {
     close(false);
   }
 };
@@ -81,7 +85,7 @@ onBeforeUnmount(() => {
 .confirm {
   position: fixed;
   inset: 0;
-  z-index: 1100;
+  z-index: var(--z-modal);
   display: flex;
   align-items: center;
   justify-content: center;

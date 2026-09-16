@@ -2,6 +2,7 @@
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
+import { ROUTE_NAMES } from "@app/router/routes";
 import { useAuthStore } from "@entities/auth";
 
 const { t } = useI18n();
@@ -11,17 +12,17 @@ const { getCurrentUser } = storeToRefs(authStore);
 
 const handleLogout = () => {
   authStore.logout();
-  router.push({ name: "login" });
+  router.push({ name: ROUTE_NAMES.LOGIN });
 };
 </script>
 
 <template>
   <header class="header">
     <nav class="header__nav">
-      <RouterLink class="header__link" :to="{ name: 'home' }">
+      <RouterLink class="header__link" :to="{ name: ROUTE_NAMES.HOME }">
         {{ t("header.allOrders") }}
       </RouterLink>
-      <RouterLink class="header__link" :to="{ name: 'create' }">
+      <RouterLink class="header__link" :to="{ name: ROUTE_NAMES.CREATE }">
         {{ t("header.addOrder") }}
       </RouterLink>
     </nav>

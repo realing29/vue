@@ -3,6 +3,7 @@ import { computed, reactive, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
+import { ROUTE_NAMES } from "@app/router/routes";
 import { useAuthStore } from "@entities/auth";
 import {
   formatOrderDate,
@@ -60,7 +61,7 @@ const handleSubmit = async () => {
 
   if (isSuccess) {
     showMessage(t("createOrder.success"));
-    router.push({ name: "home" });
+    router.push({ name: ROUTE_NAMES.HOME });
     return;
   }
 
@@ -144,7 +145,7 @@ const handleSubmit = async () => {
 .create-order__input,
 .create-order__textarea {
   width: 100%;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 5px;
   padding: 0 10px;
   font: inherit;
@@ -162,7 +163,7 @@ const handleSubmit = async () => {
 
 .create-order__error {
   margin: 0;
-  color: #c0392b;
+  color: var(--color-danger);
   font-size: 14px;
 }
 

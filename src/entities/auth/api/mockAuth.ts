@@ -1,11 +1,5 @@
-import { http } from "@shared/api";
-
-export type IUser = {
-  password: string;
-  user: "admin" | "user";
-  name: string;
-  role: "ADMIN" | "USER";
-};
+import { http, USERS_ENDPOINT } from "@shared/api";
+import type { IUser } from "../type/type";
 
 type TMockAuth = {
   name: string;
@@ -13,7 +7,7 @@ type TMockAuth = {
 };
 
 export const mockAuth = async ({ name, password }: TMockAuth) => {
-  const { data: users } = await http.get<IUser[]>("/users");
+  const { data: users } = await http.get<IUser[]>(USERS_ENDPOINT);
   const foundedUser = users.find(
     (user) => user.user === name && user.password === password,
   );

@@ -4,28 +4,29 @@ import { OrdersListPage } from "@pages/ordresList";
 import { OrdersCreatePage } from "@pages/ordersCreate";
 import { LoginPage } from "@pages/login";
 import { currentUserStorage } from "@entities/auth";
+import { ROUTE_NAMES, ROUTE_PATHS } from "./routes";
 
 const routes = [
   {
-    path: "/",
+    path: ROUTE_PATHS.ROOT,
     component: DefaultLayout,
     meta: { requiresAuth: true },
     children: [
       {
-        path: "",
-        name: "home",
+        path: ROUTE_PATHS.HOME,
+        name: ROUTE_NAMES.HOME,
         component: OrdersListPage,
       },
       {
-        path: "create",
-        name: "create",
+        path: ROUTE_PATHS.CREATE,
+        name: ROUTE_NAMES.CREATE,
         component: OrdersCreatePage,
       },
     ],
   },
   {
-    path: "/login",
-    name: "login",
+    path: ROUTE_PATHS.LOGIN,
+    name: ROUTE_NAMES.LOGIN,
     component: LoginPage,
     meta: { requiresAuth: false },
   },
@@ -42,12 +43,12 @@ router.beforeEach((to, _from, next) => {
   // Если маршрут требует авторизации, а пользователь не залогинен
   if (to.meta.requiresAuth && !isAuthenticated) {
     // Перенаправляем на страницу входа
-    next({ name: "login" });
+    next({ name: ROUTE_NAMES.LOGIN });
   }
   // Если пользователь уже авторизован, но пытается зайти на страницу Login
-  else if (to.name === "login" && isAuthenticated) {
+  else if (to.name === ROUTE_NAMES.LOGIN && isAuthenticated) {
     // Отправляем его на главную
-    next({ name: "home" });
+    next({ name: ROUTE_NAMES.HOME });
   }
   // В остальных случаях разрешаем переход
   else {
