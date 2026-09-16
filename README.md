@@ -2,6 +2,7 @@
 
 клиент - `npm run dev`
 мок сервер - `npm run api`
+линтер - `npm run lint`
 
 # Технологии
 

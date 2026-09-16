@@ -20,7 +20,7 @@ export const mockAuth = async ({ name, password }: TMockAuth) => {
 
   const isSuccessAuth = !!foundedUser;
   if (isSuccessAuth) {
-    const { password, ...user } = foundedUser;
+    const { password: _password, ...user } = foundedUser;
     return user;
   }
 };
