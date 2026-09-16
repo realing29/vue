@@ -1,3 +1,5 @@
+export const COMPLETED_ORDER_STATUS = "Выполнен";
+
 export type IOrder = {
   id: number;
   name: string;
