@@ -52,7 +52,7 @@ const handleSubmit = async () => {
   const isSuccess = await authStore.submitAuth();
 
   if (isSuccess) {
-    router.push("/ordresList");
+    router.push({ name: "home" });
     return;
   }
 

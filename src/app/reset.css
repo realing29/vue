@@ -5,6 +5,12 @@
   border: none;
 }
 
+html,
+body {
+  background: #fff;
+  color: #222;
+}
+
 *,
 *::before,
 *::after {
