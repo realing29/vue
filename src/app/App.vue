@@ -1,3 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Header from "@app/layots/Header.vue";
+</script>
 
-<template></template>
+<template>
+  <Header />
+</template>
