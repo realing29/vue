@@ -2,9 +2,12 @@
 import { computed, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "@entities/auth/model/store";
+import { useMessage } from "@shared/ui/message/useMessage";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+const { showMessage } = useMessage();
+const AUTH_ERROR_MESSAGE = "Неверный логин\\пароль";
 
 const MIN_PASSWORD_LENGTH = 8;
 const MIN_PASSWORD_LENGTH_ERROR = "Пароль должен содержать не менее 8 символов";
@@ -50,7 +53,10 @@ const handleSubmit = async () => {
 
   if (isSuccess) {
     router.push("/ordresList");
+    return;
   }
+
+  showMessage(AUTH_ERROR_MESSAGE);
 };
 </script>
 
