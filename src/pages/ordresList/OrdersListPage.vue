@@ -12,7 +12,7 @@ import {
 } from "@entities/order";
 import { useConfirm } from "@shared/ui/confirm";
 import { useMessage } from "@shared/ui/message";
-import { CheckIcon, CloseIcon } from "@shared/icons";
+import { CheckIcon, CloseIcon, SortIcon } from "@shared/icons";
 
 const SORT_KEY = {
   ADDRESS: "address",
@@ -22,11 +22,6 @@ const SORT_KEY = {
 const SORT_DIR = {
   ASC: "asc",
   DESC: "desc",
-} as const;
-
-const SORT_INDICATOR = {
-  ASC: "▲",
-  DESC: "▼",
 } as const;
 
 type SortKey = (typeof SORT_KEY)[keyof typeof SORT_KEY];
@@ -82,24 +77,27 @@ const sortedOrders = computed(() => {
 });
 
 const toggleSort = (key: SortKey) => {
-  if (sortKey.value === key) {
-    sortDir.value =
-      sortDir.value === SORT_DIR.ASC ? SORT_DIR.DESC : SORT_DIR.ASC;
+  if (sortKey.value !== key) {
+    sortKey.value = key;
+    sortDir.value = SORT_DIR.ASC;
     return;
   }
 
-  sortKey.value = key;
+  if (sortDir.value === SORT_DIR.ASC) {
+    sortDir.value = SORT_DIR.DESC;
+    return;
+  }
+
+  sortKey.value = null;
   sortDir.value = SORT_DIR.ASC;
 };
 
-const sortIndicator = (key: SortKey) => {
+const sortDirection = (key: SortKey): SortDir | null => {
   if (sortKey.value !== key) {
-    return "";
+    return null;
   }
 
-  return sortDir.value === SORT_DIR.ASC
-    ? SORT_INDICATOR.ASC
-    : SORT_INDICATOR.DESC;
+  return sortDir.value;
 };
 
 const isCompleted = (status: string) => status === COMPLETED_ORDER_STATUS;
@@ -176,11 +174,9 @@ onMounted(() => {
               @click="toggleSort(SORT_KEY.ADDRESS)"
             >
               {{ t("orders.columns.address") }}
-              <span
-                v-if="sortIndicator(SORT_KEY.ADDRESS)"
-                class="orders__sort-icon"
-                >{{ sortIndicator(SORT_KEY.ADDRESS) }}</span
-              >
+              <span class="orders__sort-icon">
+                <SortIcon :direction="sortDirection(SORT_KEY.ADDRESS)" />
+              </span>
             </button>
           </th>
           <th>
@@ -190,11 +186,9 @@ onMounted(() => {
               @click="toggleSort(SORT_KEY.DATE)"
             >
               {{ t("orders.columns.date") }}
-              <span
-                v-if="sortIndicator(SORT_KEY.DATE)"
-                class="orders__sort-icon"
-                >{{ sortIndicator(SORT_KEY.DATE) }}</span
-              >
+              <span class="orders__sort-icon">
+                <SortIcon :direction="sortDirection(SORT_KEY.DATE)" />
+              </span>
             </button>
           </th>
           <th>{{ t("orders.columns.status") }}</th>
@@ -281,7 +275,13 @@ onMounted(() => {
 }
 
 .orders__sort-icon {
-  font-size: 12px;
+  display: inline-flex;
+  color: #666;
+}
+
+.orders__sort-icon :deep(svg) {
+  width: 12px;
+  height: 12px;
 }
 
 .orders__table tbody tr.orders__row--done td:not(.orders__actions-col) {
